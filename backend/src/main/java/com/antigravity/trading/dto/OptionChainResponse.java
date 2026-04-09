@@ -103,6 +103,10 @@ public class OptionChainResponse {
         private String priority;        // HIGH / MEDIUM / LOW
         private boolean alertTriggered;
         private String color;           // green / red / yellow / gray
+        private String timestamp;       // trigger time
+
+        public String getTimestamp() { return timestamp; }
+        public void setTimestamp(String timestamp) { this.timestamp = timestamp; }
 
         public String getStrategyName() { return strategyName; }
         public void setStrategyName(String strategyName) { this.strategyName = strategyName; }

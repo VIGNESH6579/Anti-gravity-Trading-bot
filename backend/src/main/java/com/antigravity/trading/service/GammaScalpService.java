@@ -19,13 +19,13 @@ public class GammaScalpService {
             return card;
         }
         
-        LocalTime now = LocalTime.now();
+        LocalTime now = LocalTime.now(java.time.ZoneId.of("Asia/Kolkata"));
         LocalTime startTime = LocalTime.of(13, 45);
-        LocalTime endTime = LocalTime.of(14, 15);
+        LocalTime endTime = LocalTime.of(14, 30);
         
         if (now.isBefore(startTime) || now.isAfter(endTime)) {
             card.setAction("WAITING");
-            card.setRationale("Waiting for 1:45 PM window.");
+            card.setRationale("Waiting for 1:45 PM window. Currently out of 0DTE scope.");
             card.setColor("gray");
             return card;
         }

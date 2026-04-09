@@ -49,12 +49,16 @@ public class SignalEngineService {
         SignalCard vwapCard = vwapMeanReversionService.evaluate(spotPrice, analytics.getVwap(), sessionType);
         signals.add(vwapCard);
 
+        java.time.format.DateTimeFormatter timeFormatter = java.time.format.DateTimeFormatter.ofPattern("hh:mm:ss a");
+        String currentTime = java.time.LocalTime.now(java.time.ZoneId.of("Asia/Kolkata")).format(timeFormatter) + " IST";
+
         // Dispatch alerts for any triggered signals
         for (SignalCard card : signals) {
+            card.setTimestamp(currentTime);
             if (card.isAlertTriggered()) {
                 alertDispatcherService.dispatch(card, symbol);
-                // Prevent duplicate alerts immediately (basic throttle)
-                card.setAlertTriggered(false); 
+                // Prevent cyclic repetition handled by dispatcher now, 
+                // but we keep trigger boolean true to highlight in UI securely.
             }
         }
 

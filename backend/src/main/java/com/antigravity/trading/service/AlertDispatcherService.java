@@ -12,14 +12,24 @@ public class AlertDispatcherService {
     private SseService sseService;
 
     private String ntfyTopic = "Anti-Gravity-Trading-Bot";
+    private final java.util.concurrent.ConcurrentHashMap<String, String> alertCache = new java.util.concurrent.ConcurrentHashMap<>();
 
     public void dispatch(SignalCard signal, String symbol) {
         if (!signal.isAlertTriggered()) {
             return;
         }
+        
+        String key = symbol + "_" + signal.getStrategyName();
+        String action = signal.getAction();
+        
+        // Debouncer: Only send if action has changed (e.g. newly triggered BUY/SELL)
+        if (action.equals(alertCache.get(key))) {
+            return;
+        }
+        alertCache.put(key, action);
 
         String msg = String.format("🚨 SIGNAL 🚨\n%s \nAction: %s\nStrategy: %s",
-                symbol, signal.getAction(), signal.getStrategyName());
+                symbol, action, signal.getStrategyName());
         
         // 1. Browser Push (SSE)
         sseService.sendPushNotification("Anti-Gravity Alert", msg);

@@ -101,9 +101,10 @@ document.addEventListener('DOMContentLoaded', () => {
             div.innerHTML = `
                 <div class="sc-header">
                     <span>${sig.strategyName}</span>
-                    <span>Strike: ${sig.recommendedStrike || '--'}</span>
+                    <span style="font-size: 10px; color: var(--text-muted);">⏱ ${sig.timestamp || '--:--'}</span>
                 </div>
                 <div class="sc-action">${sig.action}</div>
+                <div style="font-size: 11px; margin-bottom: 6px; color: var(--accent);">Strike: ${sig.recommendedStrike || '--'}</div>
                 <div class="sc-rationale">${sig.rationale}</div>
                 ${extra}
             `;

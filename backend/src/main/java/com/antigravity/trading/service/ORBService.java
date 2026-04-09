@@ -12,12 +12,13 @@ public class ORBService {
         SignalCard card = new SignalCard();
         card.setStrategyName("Opening Range Breakout (ORB)");
         
-        LocalTime now = LocalTime.now();
-        LocalTime orbWindow = LocalTime.of(10, 15);
+        LocalTime now = LocalTime.now(java.time.ZoneId.of("Asia/Kolkata"));
+        LocalTime start = LocalTime.of(9, 15);
+        LocalTime end = LocalTime.of(10, 15);
         
-        if (now.isAfter(orbWindow)) {
+        if (now.isBefore(start) || now.isAfter(end)) {
             card.setAction("WAITING");
-            card.setRationale("ORB window passed (9:15-10:15).");
+            card.setRationale("Outside ORB window (9:15-10:15 IST).");
             card.setColor("gray");
             return card;
         }
