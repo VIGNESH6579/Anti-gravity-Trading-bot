@@ -27,7 +27,8 @@ public class SseService {
     }
 
     public void sendPushNotification(String title, String message) {
-        String payload = String.format("{\"title\":\"%s\", \"message\":\"%s\"}", title, message);
+        String escapedMessage = message.replace("\"", "\\\"").replace("\n", "\\n");
+        String payload = String.format("{\"title\":\"%s\", \"message\":\"%s\"}", title, escapedMessage);
         List<SseEmitter> deadEmitters = new ArrayList<>();
         
         for (SseEmitter emitter : emitters) {
