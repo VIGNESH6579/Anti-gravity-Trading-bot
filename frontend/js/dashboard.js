@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const API_BASE = window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1') 
                    ? 'http://localhost:8080' 
-                   : 'https://anti-gravity-bot.onrender.com';
+                   : 'https://anti-gravity-trading-bot-1.onrender.com';
 
     let currentSymbol = 'NIFTY';
     let currentExpiry = '';
