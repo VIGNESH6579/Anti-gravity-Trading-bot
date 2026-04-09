@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anti-Gravity Terminal</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="top-nav">
+        <div class="nav-left">
+            <h2 class="brand">⚡ Anti-Gravity Bot</h2>
+            <div class="symbol-toggle">
+                <button id="btnNifty" class="active">NIFTY</button>
+                <button id="btnBankNifty">BANKNIFTY</button>
+            </div>
+            <select id="expirySelect" class="expiry-dropdown"></select>
+        </div>
+        <div class="nav-center">
+            <div class="live-clock" id="liveClock">00:00:00 IST</div>
+        </div>
+        <div class="nav-right">
+            <div class="connection-status">
+                <span class="dot connected"></span> Angel One Live
+            </div>
+        </div>
+    </div>
+
+    <div class="banner" id="sessionBanner">
+        <span id="sessionText">ANALYZING SESSION...</span>
+        <span class="vix-badge" id="vixBadge">VIX: --</span>
+    </div>
+
+    <div class="dashboard-grid">
+        <!-- Left Panel: Signals -->
+        <div class="panel signals-panel">
+            <div class="panel-header">
+                <h3>LIVE SIGNALS</h3>
+                <span class="pulse-icon">🔴</span>
+            </div>
+            <div class="signals-container" id="signalsContainer">
+                <div class="loading-signals">Waiting for Option Chain data...</div>
+            </div>
+        </div>
+
+        <!-- Center Panel: Option Chain -->
+        <div class="panel chain-panel">
+            <div class="panel-header">
+                <h3>OPTION CHAIN <span id="spotPriceDisplay">Spot: --</span></h3>
+                <div class="chain-metrics">
+                    <span id="pcrDisplay">PCR: --</span>
+                    <span id="maxPainDisplay">Max Pain: --</span>
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <table class="chain-table">
+                    <thead>
+                        <tr>
+                            <th colspan="3" class="ce-header">CALL (CE)</th>
+                            <th class="strike-header">STRIKE</th>
+                            <th colspan="3" class="pe-header">PUT (PE)</th>
+                        </tr>
+                        <tr>
+                            <th>OI (L)</th>
+                            <th>IV</th>
+                            <th>LTP</th>
+                            <th></th>
+                            <th>LTP</th>
+                            <th>IV</th>
+                            <th>OI (L)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="chainBody">
+                        <!-- Populated via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Right Panel: Alerts & Config -->
+        <div class="panel alerts-panel">
+            <div class="panel-header">
+                <h3>ALERT CONFIG 100% FREE</h3>
+            </div>
+            
+            <div class="alert-config">
+                <div class="config-card">
+                    <h4>📱 Primary: Telegram Bot</h4>
+                    <p class="help-text">Instant, reliable, rich text formatting.</p>
+                    <input type="text" id="telegramChatId" placeholder="Enter Telegram Chat ID" />
+                    <a href="https://t.me/BotFather" target="_blank" class="help-link">How to get this?</a>
+                </div>
+
+                <div class="config-card">
+                    <h4>🔔 Backup: ntfy.sh App</h4>
+                    <p class="help-text">Free push notifications to Android/iOS.</p>
+                    <input type="text" id="ntfyTopic" placeholder="e.g., Anti-Gravity-Trading-Bot" />
+                    <button class="action-btn" id="saveAlertsBtn">SAVE PREFERENCES</button>
+                    <button class="action-btn test-btn" id="testAlertsBtn">TEST ALERTS</button>
+                </div>
+
+                <div class="config-card">
+                    <h4>🌐 Web Browser Push</h4>
+                    <label class="switch-container">
+                        <span>Enable Desktop Notifications</span>
+                        <input type="checkbox" id="browserPushToggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <button class="kill-switch" id="killSwitchBtn">
+                    MANUAL OVERRIDE STOP
+                    <small>Suppress all alerts</small>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast">Alert settings saved.</div>
+
+    <script src="js/alerts.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
