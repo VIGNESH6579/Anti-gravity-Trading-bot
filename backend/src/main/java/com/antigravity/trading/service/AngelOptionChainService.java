@@ -55,8 +55,35 @@ public class AngelOptionChainService {
     }
 
     public double fetchSpotPrice(String symbol) {
-        // Mocking real spot price centered around typical values for 2026
-        double base = symbol.equals("NIFTY") ? 24000.0 : 51000.0;
-        return base + (Math.random() - 0.5) * 200;
+        try {
+            String ticker = symbol.equals("NIFTY") ? "^NSEI" : "^NSEBANK";
+            String url = "https://query2.finance.yahoo.com/v8/finance/chart/" + ticker;
+            
+            org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
+            org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+            headers.set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
+            headers.set("Accept", "application/json");
+            
+            org.springframework.http.HttpEntity<String> entity = new org.springframework.http.HttpEntity<>("parameters", headers);
+            org.springframework.http.ResponseEntity<java.util.Map> response = restTemplate.exchange(
+                url, 
+                org.springframework.http.HttpMethod.GET, 
+                entity, 
+                java.util.Map.class
+            );
+            
+            java.util.Map<String, Object> chart = (java.util.Map<String, Object>) response.getBody().get("chart");
+            java.util.List<java.util.Map<String, Object>> result = (java.util.List<java.util.Map<String, Object>>) chart.get("result");
+            java.util.Map<String, Object> meta = (java.util.Map<String, Object>) result.get(0).get("meta");
+            Number priceObj = (Number) meta.get("regularMarketPrice");
+            
+            return Math.round(priceObj.doubleValue() * 100.0) / 100.0;
+            
+        } catch (Exception e) {
+            System.err.println("Failed to fetch real spot price for " + symbol + ": " + e.getMessage());
+            // Fallback
+            double base = symbol.equals("NIFTY") ? 24000.0 : 51000.0;
+            return base + (Math.random() - 0.5) * 200;
+        }
     }
 }

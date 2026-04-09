@@ -31,25 +31,35 @@ public class ExpiryCalculatorService {
         List<String> expiries = new ArrayList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
 
-        DayOfWeek targetDay = symbol.equals("NIFTY") ? DayOfWeek.THURSDAY : DayOfWeek.WEDNESDAY;
-        LocalDate seedDate = today.with(TemporalAdjusters.nextOrSame(targetDay));
-
-        // Check if today is the target day but past 3:30 PM, then move to next week
-        if (today.getDayOfWeek() == targetDay && LocalDateTime.now().getHour() >= 16) {
-             seedDate = today.plusWeeks(1).with(TemporalAdjusters.nextOrSame(targetDay));
-        }
-
-        for (int i = 0; i < 4; i++) {
-            expiries.add(seedDate.plusWeeks(i).format(formatter).toUpperCase());
+        if (symbol.equals("NIFTY")) {
+            // NIFTY: Weekly expiries on Thursday
+            LocalDate seedDate = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.THURSDAY));
+            if (today.getDayOfWeek() == DayOfWeek.THURSDAY && LocalDateTime.now().getHour() >= 16) {
+                seedDate = today.plusWeeks(1).with(TemporalAdjusters.nextOrSame(DayOfWeek.THURSDAY));
+            }
+            for (int i = 0; i < 4; i++) {
+                expiries.add(seedDate.plusWeeks(i).format(formatter).toUpperCase());
+            }
+        } else {
+            // BANKNIFTY: SEBI 2024 Rules - Only Monthly Expiries (Last Wednesday of the month)
+            LocalDate seedDate = today.with(TemporalAdjusters.lastInMonth(DayOfWeek.WEDNESDAY));
+            
+            // If the last Wednesday of this month has already passed, start with next month
+            if (today.isAfter(seedDate) || (today.isEqual(seedDate) && LocalDateTime.now().getHour() >= 16)) {
+                seedDate = today.plusMonths(1).with(TemporalAdjusters.lastInMonth(DayOfWeek.WEDNESDAY));
+            }
+            
+            for (int i = 0; i < 4; i++) {
+                expiries.add(seedDate.plusMonths(i).with(TemporalAdjusters.lastInMonth(DayOfWeek.WEDNESDAY)).format(formatter).toUpperCase());
+            }
         }
 
         String finalExpiry = expiries.get(0);
-        LocalDate finalExpiryDate = seedDate;
+        LocalDate finalExpiryDate = LocalDate.parse(finalExpiry, formatter);
 
         if (selectedExpiry != null && !selectedExpiry.isEmpty() && expiries.contains(selectedExpiry)) {
             finalExpiry = selectedExpiry;
-            int chunks = expiries.indexOf(selectedExpiry);
-            finalExpiryDate = seedDate.plusWeeks(chunks);
+            finalExpiryDate = LocalDate.parse(finalExpiry, formatter);
         }
 
         int dte = (int) ChronoUnit.DAYS.between(today, finalExpiryDate);
